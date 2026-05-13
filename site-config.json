@@ -1,9 +1,8 @@
 {
-  "projectId": "prj_kSpJybAfEWQdykywr5Q8SXx8shLk",
-  "orgId": "team_wAJaga72ggoJJMOjcUJvr6lX",
+  "projectId": "prj_gG4fpcX9WCFZCqVreyBLAOFPUUX3",
+  "orgId": "team_qnXasLsdOXvgG6Q9ZzwYqtbR",
   "projectName": "genesis-apex-fund",
-  "publicUrl": "https://website-c1ywlxe08-abdulhafizhmz-2622s-projects.vercel.app",
-  "aliasUrl": "https://website-gray-nu-rp12co2wdd.vercel.app",
+  "publicUrl": "https://genesis-apex-fund.vercel.app",
   "deployedAt": "2026-05-13",
   "type": "static-html",
   "source": "/root/genesis/companies/apex-fund/website"
