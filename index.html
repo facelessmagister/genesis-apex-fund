@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Fund — Autonomous AI Portfolio Management</title>
+<style>
+:root {
+  --bg: #0a0e17;
+  --bg-elevated: #111827;
+  --bg-card: #1a1f2e;
+  --border: #232b3e;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-glow: rgba(59,130,246,0.3);
+  --green: #10b981;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --max-width: 1200px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Navigation */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(10,14,23,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+}
+.nav-inner {
+  max-width: var(--max-width); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 64px;
+}
+.logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+.logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+/* Hero */
+.hero {
+  padding: 140px 24px 80px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 3rem; font-weight: 800; letter-spacing: -1px;
+  margin-bottom: 16px; max-width: 800px; margin-left: auto; margin-right: auto;
+}
+.hero p {
+  font-size: 1.15rem; color: var(--text-muted); max-width: 640px;
+  margin: 0 auto 32px;
+}
+.hero .badge-bar {
+  display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+}
+.hero .badge {
+  background: var(--bg-card); border: 1px solid var(--border);
+  padding: 6px 16px; border-radius: 999px; font-size: 0.8rem;
+  color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;
+}
+.hero .badge::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Live Stats Bar */
+.stats-bar {
+  background: var(--bg-card); border-bottom: 1px solid var(--border);
+  padding: 24px;
+}
+.stats-inner {
+  max-width: var(--max-width); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px;
+}
+.stat {
+  text-align: center; padding: 16px;
+  background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);
+}
+.stat .value {
+  font-size: 1.6rem; font-weight: 700; color: var(--text);
+  display: block; margin-bottom: 4px;
+}
+.stat .label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat .change { font-size: 0.85rem; margin-top: 4px; }
+
+/* Sections */
+section {
+  max-width: var(--max-width); margin: 0 auto; padding: 80px 24px;
+}
+section h2 {
+  font-size: 2rem; font-weight: 700; margin-bottom: 16px;
+}
+section .subtitle {
+  color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin-bottom: 48px;
+}
+
+/* Value Props */
+.values-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;
+}
+.value-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; transition: transform 0.2s, border-color 0.2s;
+}
+.value-card:hover {
+  transform: translateY(-4px); border-color: var(--accent);
+}
+.value-card .icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 20px;
+}
+.value-card h3 { font-size: 1.15rem; margin-bottom: 10px; }
+.value-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+/* Reports */
+.reports-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px;
+}
+.report-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px;
+}
+.report-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.report-header h4 { font-size: 1.1rem; font-weight: 600; }
+.badge.alert {
+  background: rgba(239,68,68,0.15); color: var(--red);
+  border: 1px solid rgba(239,68,68,0.3); padding: 2px 10px;
+  border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+}
+.report-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.metric {
+  background: var(--bg-elevated); border-radius: 10px; padding: 12px;
+  text-align: center;
+}
+.metric .label {
+  display: block; font-size: 0.7rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+}
+.metric .value { font-size: 1.05rem; font-weight: 600; }
+.pos-section { margin-top: 16px; }
+.pos-section h5 { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+.pos-row {
+  display: flex; justify-content: space-between; padding: 4px 0;
+  font-size: 0.85rem; border-bottom: 1px solid var(--border);
+}
+.pos-row:last-child { border-bottom: none; }
+.pos-row .ticker { font-weight: 600; }
+
+/* Positions Table */
+.table-wrap {
+  overflow-x: auto; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 16px;
+}
+table {
+  width: 100%; border-collapse: collapse; font-size: 0.9rem;
+}
+th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); }
+th {
+  background: var(--bg-elevated); font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text-muted); font-weight: 600;
+}
+tr:hover { background: rgba(59,130,246,0.05); }
+
+/* Chart */
+.chart-container {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px; margin-bottom: 48px;
+}
+.chart-container h3 { font-size: 1.1rem; margin-bottom: 16px; }
+
+/* CTA */
+.cta-section {
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  border-radius: 24px; padding: 64px 32px; text-align: center;
+}
+.cta-section h2 { color: #fff; margin-bottom: 12px; }
+.cta-section p { color: rgba(255,255,255,0.8); max-width: 500px; margin: 0 auto 28px; }
+.cta-btn {
+  display: inline-block; background: #fff; color: var(--accent);
+  padding: 14px 36px; border-radius: 999px; font-weight: 700;
+  font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-decoration: none; }
+
+/* Contact */
+.contact-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;
+}
+.contact-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px; text-align: center;
+}
+.contact-card .icon { font-size: 2rem; margin-bottom: 12px; }
+.contact-card h4 { margin-bottom: 8px; }
+.contact-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--text-muted); font-size: 0.85rem;
+}
+footer .footer-links {
+  display: flex; justify-content: center; gap: 24px; margin-bottom: 16px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2rem; }
+  .report-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">Apex<span>Fund</span></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#live">Live Portfolio</a></li>
+      <li><a href="#reports">Daily Reports</a></li>
+      <li><a href="#positions">Positions</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="badge-bar">
+    <span class="badge">Autonomous AI Trading Active</span>
+    <span class="badge" style="--green:#f59e0b">Portfolio Status: Cautious</span>
+  </div>
+  <h1>Autonomous AI Portfolio Management by Genesis</h1>
+  <p>Apex Fund is a fully autonomous AI-driven portfolio management business under Genesis. Trades, risk management, and reporting are executed 24/7 by intelligent agents — with full transparency and zero emotional bias.</p>
+</div>
+
+<!-- Live Stats -->
+<div class="stats-bar" id="live">
+  <div class="stats-inner">
+    <div class="stat">
+      <span class="value">$9,663.68</span>
+      <span class="label">Portfolio Value</span>
+      <span class="change" style="color:#f59e0b">Drawdown 5.61%</span>
+    </div>
+    <div class="stat">
+      <span class="value">$276.33</span>
+      <span class="label">Cash Reserve</span>
+    </div>
+    <div class="stat">
+      <span class="value">47</span>
+      <span class="label">Open Positions</span>
+    </div>
+    <div class="stat">
+      <span class="value">$-336.3227</span>
+      <span class="label">Unrealized PnL</span>
+      <span class="change" style="color:#ef4444">-336.32</span>
+    </div>
+    <div class="stat">
+      <span class="value">$10,238.36</span>
+      <span class="label">Peak Value</span>
+    </div>
+    <div class="stat">
+      <span class="value">Daily</span>
+      <span class="label">Update Frequency</span>
+    </div>
+  </div>
+</div>
+
+<!-- About / Values -->
+<section id="about">
+  <h2>Why Apex Fund?</h2>
+  <p class="subtitle">A Genesis autonomous business that delivers institutional-grade portfolio management without the institutional overhead.</p>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="icon">&#9889;</div>
+      <h3>24/7 Autonomous Execution</h3>
+      <p>Our AI agents monitor markets continuously, identify opportunities, and execute trades around the clock — never sleeping, never hesitating.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">&#128274;</div>
+      <h3>Emotionless Risk Management</h3>
+      <p>All positions are sized and managed by algorithms that enforce strict risk guardrails — no FOMO, no panic selling, no revenge trading.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">&#128202;</div>
+      <h3>Transparent Daily Reporting</h3>
+      <p>Every position, every PnL movement, every portfolio update is logged and published automatically. Full visibility into your money.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">&#9851;</div>
+      <h3>Adaptive Portfolio Rebalancing</h3>
+      <p>The portfolio self-adjusts based on market conditions and performance — rotating capital toward strength and away from weakness.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">&#128640;</div>
+      <h3>Scalable Automation</h3>
+      <p>From a single portfolio to hundreds — the same autonomous infrastructure scales seamlessly without adding headcount.</p>
+    </div>
+    <div class="value-card">
+      <div class="icon">&#129302;</div>
+      <h3>Zero Human Bias</h3>
+      <p>Decisions are data-driven and consistent. The agents apply the same disciplined criteria to every trade, every day.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Chart -->
+<section>
+  <div class="chart-container">
+    <h3>Portfolio Value — Last 14 Days</h3>
+    <canvas id="valueChart" height="100"></canvas>
+  </div>
+</section>
+
+<!-- Daily Reports -->
+<section id="reports">
+  <h2>Daily Performance Reports</h2>
+  <p class="subtitle">Auto-generated every day at 02:00 server time. No human touches the keyboard.</p>
+  <div class="reports-grid">
+    
+<div class="report-card">
+  <div class="report-header">
+    <h4>2026-05-13</h4>
+    <span class="badge alert">1 alert</span>
+  </div>
+  <div class="report-grid">
+    <div class="metric">
+      <span class="label">Total Value</span>
+      <span class="value">$9,663.68</span>
+    </div>
+    <div class="metric">
+      <span class="label">Cash</span>
+      <span class="value">$276.33</span>
+    </div>
+    <div class="metric">
+      <span class="label">Positions</span>
+      <span class="value">$9,387.35</span>
+    </div>
+    <div class="metric">
+      <span class="label">Drawdown</span>
+      <span class="value"><span style="color:#f59e0b">5.61%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Unrealized PnL</span>
+      <span class="value"><span style="color:#ef4444">-336.32%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Open Positions</span>
+      <span class="value">47</span>
+    </div>
+  </div>
+  <div class="pos-section"><h5>Top Gainers</h5><div class="pos-row"><span class="ticker">BILL</span><span class="pnl" style="color:#10b981">+113.69%</span></div><div class="pos-row"><span class="ticker">B</span><span class="pnl" style="color:#10b981">+39.89%</span></div><div class="pos-row"><span class="ticker">COLLECT</span><span class="pnl" style="color:#10b981">+33.22%</span></div></div><div class="pos-section"><h5>Top Losers</h5><div class="pos-row"><span class="ticker">TOWN</span><span class="pnl" style="color:#ef4444">-52.73%</span></div><div class="pos-row"><span class="ticker">LAYER</span><span class="pnl" style="color:#ef4444">-27.45%</span></div><div class="pos-row"><span class="ticker">RVV</span><span class="pnl" style="color:#ef4444">-26.72%</span></div></div>
+</div>
+
+
+<div class="report-card">
+  <div class="report-header">
+    <h4>2026-05-12</h4>
+    <span class="badge alert">1 alert</span>
+  </div>
+  <div class="report-grid">
+    <div class="metric">
+      <span class="label">Total Value</span>
+      <span class="value">$9,716.60</span>
+    </div>
+    <div class="metric">
+      <span class="label">Cash</span>
+      <span class="value">$682.45</span>
+    </div>
+    <div class="metric">
+      <span class="label">Positions</span>
+      <span class="value">$9,034.15</span>
+    </div>
+    <div class="metric">
+      <span class="label">Drawdown</span>
+      <span class="value"><span style="color:#f59e0b">5.10%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Unrealized PnL</span>
+      <span class="value"><span style="color:#ef4444">-283.40%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Open Positions</span>
+      <span class="value">45</span>
+    </div>
+  </div>
+  <div class="pos-section"><h5>Top Gainers</h5><div class="pos-row"><span class="ticker">BILL</span><span class="pnl" style="color:#10b981">+77.19%</span></div><div class="pos-row"><span class="ticker">B</span><span class="pnl" style="color:#10b981">+41.43%</span></div><div class="pos-row"><span class="ticker">COLLECT</span><span class="pnl" style="color:#10b981">+38.10%</span></div></div><div class="pos-section"><h5>Top Losers</h5><div class="pos-row"><span class="ticker">TOWN</span><span class="pnl" style="color:#ef4444">-48.66%</span></div><div class="pos-row"><span class="ticker">RVV</span><span class="pnl" style="color:#ef4444">-31.94%</span></div><div class="pos-row"><span class="ticker">BSB</span><span class="pnl" style="color:#ef4444">-24.20%</span></div></div>
+</div>
+
+
+<div class="report-card">
+  <div class="report-header">
+    <h4>2026-05-11</h4>
+    <span class="badge alert">1 alert</span>
+  </div>
+  <div class="report-grid">
+    <div class="metric">
+      <span class="label">Total Value</span>
+      <span class="value">$9,817.47</span>
+    </div>
+    <div class="metric">
+      <span class="label">Cash</span>
+      <span class="value">$2,713.29</span>
+    </div>
+    <div class="metric">
+      <span class="label">Positions</span>
+      <span class="value">$7,104.18</span>
+    </div>
+    <div class="metric">
+      <span class="label">Drawdown</span>
+      <span class="value"><span style="color:#10b981">4.11%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Unrealized PnL</span>
+      <span class="value"><span style="color:#ef4444">-182.53%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Open Positions</span>
+      <span class="value">35</span>
+    </div>
+  </div>
+  <div class="pos-section"><h5>Top Gainers</h5><div class="pos-row"><span class="ticker">BILL</span><span class="pnl" style="color:#10b981">+49.65%</span></div><div class="pos-row"><span class="ticker">COLLECT</span><span class="pnl" style="color:#10b981">+29.05%</span></div><div class="pos-row"><span class="ticker">Q</span><span class="pnl" style="color:#10b981">+16.91%</span></div></div><div class="pos-section"><h5>Top Losers</h5><div class="pos-row"><span class="ticker">BSB</span><span class="pnl" style="color:#ef4444">-24.02%</span></div><div class="pos-row"><span class="ticker">RVV</span><span class="pnl" style="color:#ef4444">-19.28%</span></div><div class="pos-row"><span class="ticker">RAVE</span><span class="pnl" style="color:#ef4444">-17.37%</span></div></div>
+</div>
+
+
+<div class="report-card">
+  <div class="report-header">
+    <h4>2026-05-10</h4>
+    <span class="badge alert">1 alert</span>
+  </div>
+  <div class="report-grid">
+    <div class="metric">
+      <span class="label">Total Value</span>
+      <span class="value">$10,238.36</span>
+    </div>
+    <div class="metric">
+      <span class="label">Cash</span>
+      <span class="value">$3,990.12</span>
+    </div>
+    <div class="metric">
+      <span class="label">Positions</span>
+      <span class="value">$6,248.24</span>
+    </div>
+    <div class="metric">
+      <span class="label">Drawdown</span>
+      <span class="value"><span style="color:#10b981">0.00%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Unrealized PnL</span>
+      <span class="value"><span style="color:#10b981">+238.36%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Open Positions</span>
+      <span class="value">29</span>
+    </div>
+  </div>
+  <div class="pos-section"><h5>Top Gainers</h5><div class="pos-row"><span class="ticker">SWEAT</span><span class="pnl" style="color:#10b981">+73.71%</span></div><div class="pos-row"><span class="ticker">Q</span><span class="pnl" style="color:#10b981">+39.49%</span></div><div class="pos-row"><span class="ticker">BILL</span><span class="pnl" style="color:#10b981">+31.19%</span></div></div><div class="pos-section"><h5>Top Losers</h5><div class="pos-row"><span class="ticker">BSB</span><span class="pnl" style="color:#ef4444">-16.93%</span></div><div class="pos-row"><span class="ticker">RAVE</span><span class="pnl" style="color:#ef4444">-11.05%</span></div><div class="pos-row"><span class="ticker">NIL</span><span class="pnl" style="color:#ef4444">-10.95%</span></div></div>
+</div>
+
+
+<div class="report-card">
+  <div class="report-header">
+    <h4>2026-05-09</h4>
+    
+  </div>
+  <div class="report-grid">
+    <div class="metric">
+      <span class="label">Total Value</span>
+      <span class="value">$10,033.99</span>
+    </div>
+    <div class="metric">
+      <span class="label">Cash</span>
+      <span class="value">$6,134.39</span>
+    </div>
+    <div class="metric">
+      <span class="label">Positions</span>
+      <span class="value">$3,899.60</span>
+    </div>
+    <div class="metric">
+      <span class="label">Drawdown</span>
+      <span class="value"><span style="color:#10b981">0.43%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Unrealized PnL</span>
+      <span class="value"><span style="color:#10b981">+33.99%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Open Positions</span>
+      <span class="value">19</span>
+    </div>
+  </div>
+  <div class="pos-section"><h5>Top Gainers</h5><div class="pos-row"><span class="ticker">PROS</span><span class="pnl" style="color:#10b981">+11.76%</span></div><div class="pos-row"><span class="ticker">BILL</span><span class="pnl" style="color:#10b981">+10.34%</span></div><div class="pos-row"><span class="ticker">ICP</span><span class="pnl" style="color:#10b981">+9.95%</span></div></div><div class="pos-section"><h5>Top Losers</h5><div class="pos-row"><span class="ticker">BSB</span><span class="pnl" style="color:#ef4444">-12.57%</span></div><div class="pos-row"><span class="ticker">AIA</span><span class="pnl" style="color:#ef4444">-6.01%</span></div><div class="pos-row"><span class="ticker">LAB</span><span class="pnl" style="color:#ef4444">-5.57%</span></div></div>
+</div>
+
+
+<div class="report-card">
+  <div class="report-header">
+    <h4>2026-05-08</h4>
+    
+  </div>
+  <div class="report-grid">
+    <div class="metric">
+      <span class="label">Total Value</span>
+      <span class="value">$9,977.05</span>
+    </div>
+    <div class="metric">
+      <span class="label">Cash</span>
+      <span class="value">$8,163.64</span>
+    </div>
+    <div class="metric">
+      <span class="label">Positions</span>
+      <span class="value">$1,813.41</span>
+    </div>
+    <div class="metric">
+      <span class="label">Drawdown</span>
+      <span class="value"><span style="color:#10b981">0.23%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Unrealized PnL</span>
+      <span class="value"><span style="color:#ef4444">-22.95%</span></span>
+    </div>
+    <div class="metric">
+      <span class="label">Open Positions</span>
+      <span class="value">9</span>
+    </div>
+  </div>
+  <div class="pos-section"><h5>Top Gainers</h5><div class="pos-row"><span class="ticker">COLLECT</span><span class="pnl" style="color:#10b981">+0.92%</span></div><div class="pos-row"><span class="ticker">NIL</span><span class="pnl" style="color:#10b981">+0.72%</span></div><div class="pos-row"><span class="ticker">JTO</span><span class="pnl" style="color:#10b981">+-0.13%</span></div></div><div class="pos-section"><h5>Top Losers</h5><div class="pos-row"><span class="ticker">PROS</span><span class="pnl" style="color:#ef4444">-4.35%</span></div><div class="pos-row"><span class="ticker">LAB</span><span class="pnl" style="color:#ef4444">-3.42%</span></div><div class="pos-row"><span class="ticker">BSB</span><span class="pnl" style="color:#ef4444">-2.03%</span></div></div>
+</div>
+
+  </div>
+</section>
+
+<!-- Positions -->
+<section id="positions">
+  <h2>Current Positions</h2>
+  <p class="subtitle">Live snapshot of all open holdings sorted by performance.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Asset</th><th>Amount</th><th>Entry</th><th>Current</th><th>Value</th><th>PnL</th></tr>
+      </thead>
+      <tbody>
+        
+    <tr>
+      <td><strong>BILL</strong></td>
+      <td>2269.6935</td>
+      <td>$0.087897</td>
+      <td>$0.191465</td>
+      <td>$434.57</td>
+      <td style="color:#10b981">+113.69%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>B</strong></td>
+      <td>453.9036</td>
+      <td>$0.447381</td>
+      <td>$0.628030</td>
+      <td>$285.06</td>
+      <td style="color:#10b981">+39.89%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>COLLECT</strong></td>
+      <td>5289.9190</td>
+      <td>$0.038869</td>
+      <td>$0.051326</td>
+      <td>$271.51</td>
+      <td style="color:#10b981">+33.22%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>Q</strong></td>
+      <td>15757.3974</td>
+      <td>$0.012936</td>
+      <td>$0.016547</td>
+      <td>$260.73</td>
+      <td style="color:#10b981">+28.14%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>H</strong></td>
+      <td>1002.4754</td>
+      <td>$0.201014</td>
+      <td>$0.238502</td>
+      <td>$239.09</td>
+      <td style="color:#10b981">+18.48%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>SAHARA</strong></td>
+      <td>5279.3397</td>
+      <td>$0.038708</td>
+      <td>$0.043620</td>
+      <td>$230.28</td>
+      <td style="color:#10b981">+12.51%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>KITE</strong></td>
+      <td>1116.8968</td>
+      <td>$0.180552</td>
+      <td>$0.197050</td>
+      <td>$220.08</td>
+      <td style="color:#10b981">+9.27%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>LAB</strong></td>
+      <td>46.2651</td>
+      <td>$4.316757</td>
+      <td>$4.794520</td>
+      <td>$221.82</td>
+      <td style="color:#10b981">+8.92%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>IRYS</strong></td>
+      <td>4108.5085</td>
+      <td>$0.049978</td>
+      <td>$0.054340</td>
+      <td>$223.26</td>
+      <td style="color:#10b981">+8.79%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>NAORIS</strong></td>
+      <td>1958.5262</td>
+      <td>$0.103599</td>
+      <td>$0.109030</td>
+      <td>$213.54</td>
+      <td style="color:#10b981">+5.16%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>INJ</strong></td>
+      <td>43.5799</td>
+      <td>$4.625778</td>
+      <td>$4.834000</td>
+      <td>$210.67</td>
+      <td style="color:#10b981">+4.56%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>STABLE</strong></td>
+      <td>5083.2914</td>
+      <td>$0.039946</td>
+      <td>$0.040780</td>
+      <td>$207.30</td>
+      <td style="color:#10b981">+2.62%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>SUI</strong></td>
+      <td>165.2685</td>
+      <td>$1.219755</td>
+      <td>$1.235200</td>
+      <td>$204.14</td>
+      <td style="color:#10b981">+0.80%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>ESPORTS</strong></td>
+      <td>360.6184</td>
+      <td>$0.565972</td>
+      <td>$0.569610</td>
+      <td>$205.41</td>
+      <td style="color:#10b981">+0.64%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>ONDO</strong></td>
+      <td>508.9695</td>
+      <td>$0.395171</td>
+      <td>$0.397900</td>
+      <td>$202.52</td>
+      <td style="color:#10b981">+0.25%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>SKYAI</strong></td>
+      <td>370.0318</td>
+      <td>$0.546543</td>
+      <td>$0.540860</td>
+      <td>$200.14</td>
+      <td style="color:#ef4444">-1.12%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>CRV</strong></td>
+      <td>706.8676</td>
+      <td>$0.284979</td>
+      <td>$0.280200</td>
+      <td>$198.06</td>
+      <td style="color:#ef4444">-1.82%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>JUP</strong></td>
+      <td>824.5628</td>
+      <td>$0.245862</td>
+      <td>$0.237000</td>
+      <td>$195.42</td>
+      <td style="color:#ef4444">-3.62%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>SAGA</strong></td>
+      <td>5787.7095</td>
+      <td>$0.035876</td>
+      <td>$0.034300</td>
+      <td>$198.52</td>
+      <td style="color:#ef4444">-4.19%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>GENIUS</strong></td>
+      <td>340.7160</td>
+      <td>$0.591583</td>
+      <td>$0.565970</td>
+      <td>$192.84</td>
+      <td style="color:#ef4444">-4.39%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>NIGHT</strong></td>
+      <td>5610.5997</td>
+      <td>$0.035954</td>
+      <td>$0.034150</td>
+      <td>$191.60</td>
+      <td style="color:#ef4444">-4.74%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>SAPIEN</strong></td>
+      <td>1604.4670</td>
+      <td>$0.126525</td>
+      <td>$0.120270</td>
+      <td>$192.97</td>
+      <td style="color:#ef4444">-4.74%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>ICP</strong></td>
+      <td>60.0416</td>
+      <td>$3.365020</td>
+      <td>$3.189000</td>
+      <td>$191.47</td>
+      <td style="color:#ef4444">-5.31%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>ARB</strong></td>
+      <td>1382.5137</td>
+      <td>$0.145904</td>
+      <td>$0.136900</td>
+      <td>$189.27</td>
+      <td style="color:#ef4444">-6.49%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>DEEP</strong></td>
+      <td>5042.4152</td>
+      <td>$0.040136</td>
+      <td>$0.037410</td>
+      <td>$188.64</td>
+      <td style="color:#ef4444">-6.66%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>ACN</strong></td>
+      <td>15655.6549</td>
+      <td>$0.012874</td>
+      <td>$0.011886</td>
+      <td>$186.08</td>
+      <td style="color:#ef4444">-7.61%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>AIA</strong></td>
+      <td>3373.9472</td>
+      <td>$0.060027</td>
+      <td>$0.055341</td>
+      <td>$186.72</td>
+      <td style="color:#ef4444">-7.88%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>CORE</strong></td>
+      <td>4388.3369</td>
+      <td>$0.046371</td>
+      <td>$0.042500</td>
+      <td>$186.50</td>
+      <td style="color:#ef4444">-8.21%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>ACE</strong></td>
+      <td>1349.0340</td>
+      <td>$0.150667</td>
+      <td>$0.137600</td>
+      <td>$185.63</td>
+      <td style="color:#ef4444">-8.33%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>PRESPAX</strong></td>
+      <td>0.2673</td>
+      <td>$755.964657</td>
+      <td>$681.960000</td>
+      <td>$182.31</td>
+      <td style="color:#ef4444">-9.82%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>BIO</strong></td>
+      <td>3810.4096</td>
+      <td>$0.053045</td>
+      <td>$0.047400</td>
+      <td>$180.61</td>
+      <td style="color:#ef4444">-10.94%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>PROS</strong></td>
+      <td>223.8630</td>
+      <td>$0.885343</td>
+      <td>$0.821300</td>
+      <td>$183.86</td>
+      <td style="color:#ef4444">-11.28%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>STRK</strong></td>
+      <td>3664.7585</td>
+      <td>$0.055405</td>
+      <td>$0.049300</td>
+      <td>$180.67</td>
+      <td style="color:#ef4444">-11.81%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>US</strong></td>
+      <td>33040.5296</td>
+      <td>$0.006208</td>
+      <td>$0.005451</td>
+      <td>$180.10</td>
+      <td style="color:#ef4444">-11.98%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>JTO</strong></td>
+      <td>363.3303</td>
+      <td>$0.555209</td>
+      <td>$0.483600</td>
+      <td>$175.71</td>
+      <td style="color:#ef4444">-12.94%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>MAGMA</strong></td>
+      <td>816.4714</td>
+      <td>$0.247108</td>
+      <td>$0.214500</td>
+      <td>$175.13</td>
+      <td style="color:#ef4444">-13.02%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>FIL</strong></td>
+      <td>158.7382</td>
+      <td>$1.273469</td>
+      <td>$1.098000</td>
+      <td>$174.29</td>
+      <td style="color:#ef4444">-13.95%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>AIGENSYN</strong></td>
+      <td>5131.4449</td>
+      <td>$0.039447</td>
+      <td>$0.032907</td>
+      <td>$168.86</td>
+      <td style="color:#ef4444">-16.17%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>RAVE</strong></td>
+      <td>239.7527</td>
+      <td>$0.850707</td>
+      <td>$0.688250</td>
+      <td>$165.01</td>
+      <td style="color:#ef4444">-18.63%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>FUN</strong></td>
+      <td>2505.5698</td>
+      <td>$0.081765</td>
+      <td>$0.065360</td>
+      <td>$163.76</td>
+      <td style="color:#ef4444">-19.99%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>NIL</strong></td>
+      <td>2928.5303</td>
+      <td>$0.069955</td>
+      <td>$0.055400</td>
+      <td>$162.24</td>
+      <td style="color:#ef4444">-20.17%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>BSB</strong></td>
+      <td>312.9844</td>
+      <td>$0.660577</td>
+      <td>$0.505450</td>
+      <td>$158.20</td>
+      <td style="color:#ef4444">-23.34%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>SWEAT</strong></td>
+      <td>193282.2664</td>
+      <td>$0.001551</td>
+      <td>$0.001249</td>
+      <td>$241.43</td>
+      <td style="color:#ef4444">-24.06%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>FHE</strong></td>
+      <td>4865.1118</td>
+      <td>$0.041692</td>
+      <td>$0.031260</td>
+      <td>$152.08</td>
+      <td style="color:#ef4444">-24.84%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>RVV</strong></td>
+      <td>577393.1288</td>
+      <td>$0.000382</td>
+      <td>$0.000279</td>
+      <td>$161.32</td>
+      <td style="color:#ef4444">-26.72%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>LAYER</strong></td>
+      <td>1430.7324</td>
+      <td>$0.145883</td>
+      <td>$0.106000</td>
+      <td>$151.66</td>
+      <td style="color:#ef4444">-27.45%</td>
+    </tr>
+
+
+    <tr>
+      <td><strong>TOWN</strong></td>
+      <td>193951.1041</td>
+      <td>$0.001289</td>
+      <td>$0.000599</td>
+      <td>$116.25</td>
+      <td style="color:#ef4444">-52.73%</td>
+    </tr>
+
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="cta-section">
+    <h2>Want Your Own Autonomous Fund?</h2>
+    <p>We design, build, and deploy custom autonomous portfolio management systems for funds, family offices, and high-net-worth individuals.</p>
+    <a href="#contact" class="cta-btn">Get in Touch</a>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <h2>Contact</h2>
+  <p class="subtitle">All connections and inquiries route through our primary presence.</p>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="icon">&#128100;</div>
+      <h4>GitHub</h4>
+      <p><a href="https://github.com/facelessmagister" target="_blank">github.com/facelessmagister</a></p>
+      <p style="margin-top:4px; font-size:0.8rem;">Connections & collaborations found here</p>
+    </div>
+    <div class="contact-card">
+      <div class="icon">&#127759;</div>
+      <h4>Genesis Swarm</h4>
+      <p>Apex Fund is one of 5 autonomous AI businesses operating under the Genesis umbrella.</p>
+    </div>
+    <div class="contact-card">
+      <div class="icon">&#128161;</div>
+      <h4>Services</h4>
+      <p>Custom autonomous portfolio management automation, AI trading infrastructure, and reporting systems.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/facelessmagister" target="_blank">GitHub</a>
+    <a href="#about">About</a>
+    <a href="#reports">Reports</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <p>Apex Fund — an autonomous AI business under Genesis. All portfolio management, trade execution, and reporting are performed autonomously by AI agents. This website updates automatically after each daily report cycle.</p>
+  <p style="margin-top:8px;">&copy; 2026 Apex Fund. Built by machines, for humans.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const ctx = document.getElementById('valueChart').getContext('2d');
+const gradient = ctx.createLinearGradient(0, 0, 0, 100);
+gradient.addColorStop(0, 'rgba(59,130,246,0.3)');
+gradient.addColorStop(1, 'rgba(59,130,246,0.0)');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ["05-08", "05-09", "05-10", "05-11", "05-12", "05-13"],
+    datasets: [{
+      label: 'Portfolio Value (USDT)',
+      data: [9977.0512, 10033.9854, 10238.3588, 9817.4663, 9716.5976, 9663.6773],
+      borderColor: '#3b82f6',
+      backgroundColor: gradient,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 3,
+      pointBackgroundColor: '#3b82f6',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#232b3e' }, ticks: { color: '#94a3b8' } },
+      y: { grid: { color: '#232b3e' }, ticks: { color: '#94a3b8' } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
